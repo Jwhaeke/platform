@@ -1,17 +1,14 @@
 <?php include 'data.php'; ?>
 
 <?php
-
-
 //On submit
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $game = $_POST['name'];
     $genre = $_POST['genre'];
     $price = $_POST['price'];
     $review = $_POST['review'];
     $searchedGames = [];
-
-    
 
     function filterGame(){
         global $listGames;
@@ -20,11 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $tempArr = [];
         if ($game != '') {              //  If game is not empty
             $gameName = strtolower($game);
-
-            if (empty($searchedGames)) {                                                         
-                
-                // If genre is anything other than no preference:
-                // Loop through $listgames and check if $genre is same as "genre"
+            if (empty($searchedGames)) {                                                                         
                 for ($i=0; $i < count($listGames); $i++) { 
                     if ($listGames[$i]["game"] == $game) {
                         array_push($searchedGames, $listGames[$i]); 
@@ -32,8 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
             } else {
                 for ($i=0; $i < count($searchedGames); $i++) { 
-                    if ($listGames[$i]["game"] == $game) {
-                        array_push($tempArr, $listGames[$i]);
+                    if ($searchedGames[$i]["game"] == $game) {
+                        array_push($tempArr, $searchedGames[$i]);
                     }                    
                 }
                 $searchedGames = $tempArr;    
@@ -47,36 +40,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         global $genre;
         $tempArr = [];
         if ($genre != '') {   
-            echo "yay";                                  // If genre is anything other than no preference:
             if (empty($searchedGames)) {              
-            for ($i=0; $i < count($listGames); $i++) {          // Loop through $listgames and check if $genre is same as "genre"
-                if ($listGames[$i]["genre"] == $genre) {
-                    array_push($searchedGames, $listGames[$i]); 
-                } 
+                for ($i=0; $i < count($listGames); $i++) {          // Loop through $listgames and check if $genre is same as "genre"
+                    if ($listGames[$i]["genre"] == $genre) {
+                        array_push($searchedGames, $listGames[$i]); 
+                    } 
+                }
+            } else {
+                for ($i=0; $i < count($searchedGames); $i++) { 
+                    if ($listGames[$i]["genre"] == $genre) {
+                        array_push($tempArr, $listGames[$i]);
+                    }                    
+                }
+                $searchedGames = $tempArr; 
             }
-        } else {
-            for ($i=0; $i < count($searchedGames); $i++) { 
-                if ($listGames[$i]["genre"] == $genre) {
-                    array_push($tempArr, $listGames[$i]);
-                }                    
-            }
-            $searchedGames = $tempArr; 
+            
         }
     }
-
     
     function filterPrice(){
         global $listGames;
         global $searchedGames;
         global $price;
-        if ($price != '') {            
-            //If price is not empty    
-            // Loop through $listgames and check if $price is lower than "price"
-            for ($i=0; $i < count($listGames); $i++) { 
-                if ($listGames[$i]["price"] <= $price) {
-                    array_push($searchedGames, $listGames[$i]);
-                } 
-            }    
+        $tempArr = [];
+        if ($price != '') {                                                //If price is not empty    
+            if (empty($searchedGames)) {    
+                for ($i=0; $i < count($listGames); $i++) {                 // Loop through $listgames and check if $price is lower than "price"
+                    if ($listGames[$i]["price"] <= $price) {
+                        array_push($searchedGames, $listGames[$i]);
+                    } 
+                }    
+            } else { 
+                for ($i=0; $i < count($searchedGames); $i++) { 
+                    if ($searchedGames[$i]["price"] <= $price) {
+                        array_push($tempArr, $searchedGames[$i]);
+                    }                    
+                }
+                $searchedGames = $tempArr;  
+            }   
         }
     }
 
@@ -84,15 +85,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         global $listGames;
         global $searchedGames;
         global $review;
+        $tempArr = [];
         if ($review != '') {
-            //If price is not empty
-                
-            // Loop through $listgames and check if $review is higher than "review"
-            for ($i=0; $i < count($listGames); $i++) { 
-                if ($listGames[$i]["review"] >= $review) {
-                    array_push($searchedGames, $listGames[$i]);
-                } 
-            }
+            if (empty($searchedGames)) {    
+                for ($i=0; $i < count($listGames); $i++) { 
+                    if ($listGames[$i]["review"] >= $review) {
+                        array_push($searchedGames, $listGames[$i]);
+                    } 
+                }
+            } else { 
+                for ($i=0; $i < count($searchedGames); $i++) { 
+                    if ($searchedGames[$i]["review"] >= $review) {
+                        array_push($tempArr, $searchedGames[$i]);
+                    }                    
+                }
+                $searchedGames = $tempArr;  
+            }   
         }
     }
     
