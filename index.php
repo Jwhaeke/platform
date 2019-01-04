@@ -1,5 +1,81 @@
 <?php include 'data.php'; ?>
 
+<?php
+
+//On submit
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $game = $_POST['name'];
+    $genre = $_POST['genre'];
+    $price = $_POST['price'];
+    $review = $_POST['review'];
+
+    #Working out how to combine search field, will first code them seperately
+
+    if ($game != '') {
+        //If game is not empty
+        $gameName = strtolower($game);
+
+
+        // Loop through $listgames and check if $game is same as "game"
+        for ($i=0; $i < count($listGames); $i++) { 
+            if ($listGames[$i]["game"] == $gameName) {
+                echo $listGames[$i]["game"]." This game costs: ".$listGames[$i]["price"]." This game has a review value of: ".$listGames[$i]["review"]."<br>";
+            } 
+        }
+        
+    } else {
+        echo "you have not selected a game";
+    }
+
+    if ($genre != '') {
+        //If genre is anything other than no preference:
+        
+        // Loop through $listgames and check if $genre is same as "genre"
+        for ($i=0; $i < count($listGames); $i++) { 
+            if ($listGames[$i]["genre"] == $genre) {
+                echo $listGames[$i]["game"]." This game costs: ".$listGames[$i]["price"]." This game has a review value of: ".$listGames[$i]["review"]."<br>";
+            } 
+        }
+        
+    } else {
+        echo "you have not selected a genre";
+    }
+
+    if ($price != '') {
+        //If price is not empty
+        
+
+
+        // Loop through $listgames and check if $price is lower than "price"
+        for ($i=0; $i < count($listGames); $i++) { 
+            if ($listGames[$i]["price"] <= $price) {
+                echo $listGames[$i]["game"]." This game costs: ".$listGames[$i]["price"]." This game has a review value of: ".$listGames[$i]["review"]."<br>";
+            } 
+        }
+        
+    } else {
+        echo "you have not selected a price";
+    }
+
+    if ($review != '') {
+        //If price is not empty
+        
+
+
+        // Loop through $listgames and check if $review is higher than "review"
+        for ($i=0; $i < count($listGames); $i++) { 
+            if ($listGames[$i]["review"] >= $review) {
+                echo $listGames[$i]["game"]." This game costs: ".$listGames[$i]["price"]." This game has a review value of: ".$listGames[$i]["review"]."<br>";
+            } 
+        }
+        
+    } else {
+        echo "you have not selected a review value";
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,15 +90,15 @@
 
 <div class="container">
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
-        <input type="text" name="name" id="" placeholder="Search Game">
+        <input type="text" name="name" id="" placeholder="Search Game" value="<?php if(isset($_POST['name'])) echo $_POST['name'] ?>">
         <select name="genre" id="">
-            <option value="none">No preference</option>
+            <option value="">Select Genre</option>
             <option value="rpg">RPG</option>
             <option value="fps">FPS</option>
             <option value="arcade">Arcade</option>
         </select>
-        <input type="number" name="price" id="" placeholder="Max Price">
-        <input type="number" name="review" id="" placeholder="Min Review Value">
+        <input type="number" name="price" id="" placeholder="Max Price" value="<?php if(isset($_POST['price'])) echo $_POST['price'] ?>">
+        <input type="number" name="review" id="" placeholder="Min Review Value" value="<?php if(isset($_POST['review'])) echo $_POST['review'] ?>">
         <button type="submit">Search</button>
     </form>
 </div>
