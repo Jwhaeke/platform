@@ -7,6 +7,34 @@ $listGames = array (
         "price" => 60,
         "review" => 4.5
     ),
+
+    array (
+        "game" => "abc",
+        "genre" => "rpg",
+        "price" => 50,
+        "review" => 4.5
+    ),
+
+    array (
+        "game" => "def",
+        "genre" => "rpg",
+        "price" => 60,
+        "review" => 4.5
+    ),
+
+    array (
+        "game" => "grt",
+        "genre" => "rpg",
+        "price" => 40,
+        "review" => 4.5
+    ),
+
+    array (
+        "game" => "dfj",
+        "genre" => "rpg",
+        "price" => 30,
+        "review" => 4.5
+    ),
     
     array (
         "game" => "black ops 3",

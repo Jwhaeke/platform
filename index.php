@@ -2,77 +2,108 @@
 
 <?php
 
+
 //On submit
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $game = $_POST['name'];
     $genre = $_POST['genre'];
     $price = $_POST['price'];
     $review = $_POST['review'];
+    $searchedGames = [];
 
-    #Working out how to combine search field, will first code them seperately
+    
 
-    if ($game != '') {
-        //If game is not empty
-        $gameName = strtolower($game);
+    function filterGame(){
+        global $listGames;
+        global $searchedGames;
+        global $game;
+        $tempArr = [];
+        if ($game != '') {              //  If game is not empty
+            $gameName = strtolower($game);
 
-
-        // Loop through $listgames and check if $game is same as "game"
-        for ($i=0; $i < count($listGames); $i++) { 
-            if ($listGames[$i]["game"] == $gameName) {
-                echo $listGames[$i]["game"]." This game costs: ".$listGames[$i]["price"]." This game has a review value of: ".$listGames[$i]["review"]."<br>";
-            } 
+            if (empty($searchedGames)) {                                                         
+                
+                // If genre is anything other than no preference:
+                // Loop through $listgames and check if $genre is same as "genre"
+                for ($i=0; $i < count($listGames); $i++) { 
+                    if ($listGames[$i]["game"] == $game) {
+                        array_push($searchedGames, $listGames[$i]); 
+                    } 
+                }
+            } else {
+                for ($i=0; $i < count($searchedGames); $i++) { 
+                    if ($listGames[$i]["game"] == $game) {
+                        array_push($tempArr, $listGames[$i]);
+                    }                    
+                }
+                $searchedGames = $tempArr;    
+            }    
         }
-        
-    } else {
-        echo "you have not selected a game";
     }
 
-    if ($genre != '') {
-        //If genre is anything other than no preference:
-        
-        // Loop through $listgames and check if $genre is same as "genre"
-        for ($i=0; $i < count($listGames); $i++) { 
-            if ($listGames[$i]["genre"] == $genre) {
-                echo $listGames[$i]["game"]." This game costs: ".$listGames[$i]["price"]." This game has a review value of: ".$listGames[$i]["review"]."<br>";
-            } 
+    function filterGenre(){
+        global $listGames;
+        global $searchedGames;
+        global $genre;
+        $tempArr = [];
+        if ($genre != '') {   
+            echo "yay";                                  // If genre is anything other than no preference:
+            if (empty($searchedGames)) {              
+            for ($i=0; $i < count($listGames); $i++) {          // Loop through $listgames and check if $genre is same as "genre"
+                if ($listGames[$i]["genre"] == $genre) {
+                    array_push($searchedGames, $listGames[$i]); 
+                } 
+            }
+        } else {
+            for ($i=0; $i < count($searchedGames); $i++) { 
+                if ($listGames[$i]["genre"] == $genre) {
+                    array_push($tempArr, $listGames[$i]);
+                }                    
+            }
+            $searchedGames = $tempArr; 
         }
-        
-    } else {
-        echo "you have not selected a genre";
     }
 
-    if ($price != '') {
-        //If price is not empty
-        
-
-
-        // Loop through $listgames and check if $price is lower than "price"
-        for ($i=0; $i < count($listGames); $i++) { 
-            if ($listGames[$i]["price"] <= $price) {
-                echo $listGames[$i]["game"]." This game costs: ".$listGames[$i]["price"]." This game has a review value of: ".$listGames[$i]["review"]."<br>";
-            } 
+    
+    function filterPrice(){
+        global $listGames;
+        global $searchedGames;
+        global $price;
+        if ($price != '') {            
+            //If price is not empty    
+            // Loop through $listgames and check if $price is lower than "price"
+            for ($i=0; $i < count($listGames); $i++) { 
+                if ($listGames[$i]["price"] <= $price) {
+                    array_push($searchedGames, $listGames[$i]);
+                } 
+            }    
         }
-        
-    } else {
-        echo "you have not selected a price";
     }
 
-    if ($review != '') {
-        //If price is not empty
-        
-
-
-        // Loop through $listgames and check if $review is higher than "review"
-        for ($i=0; $i < count($listGames); $i++) { 
-            if ($listGames[$i]["review"] >= $review) {
-                echo $listGames[$i]["game"]." This game costs: ".$listGames[$i]["price"]." This game has a review value of: ".$listGames[$i]["review"]."<br>";
-            } 
+    function filterReview(){
+        global $listGames;
+        global $searchedGames;
+        global $review;
+        if ($review != '') {
+            //If price is not empty
+                
+            // Loop through $listgames and check if $review is higher than "review"
+            for ($i=0; $i < count($listGames); $i++) { 
+                if ($listGames[$i]["review"] >= $review) {
+                    array_push($searchedGames, $listGames[$i]);
+                } 
+            }
         }
-        
-    } else {
-        echo "you have not selected a review value";
     }
+    
+    filterGenre();
+    filterGame();
+    filterPrice();
+    filterReview();
+    print_r($searchedGames);
+        
 }
+  
 
 ?>
 
