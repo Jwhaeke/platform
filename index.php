@@ -13,8 +13,14 @@
 
 
 <div class="container">
-    <form action="">
+    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
         <input type="text" name="name" id="" placeholder="Search Game">
+        <select name="genre" id="">
+            <option value="none">No preference</option>
+            <option value="rpg">RPG</option>
+            <option value="fps">FPS</option>
+            <option value="arcade">Arcade</option>
+        </select>
         <input type="number" name="price" id="" placeholder="Max Price">
         <input type="number" name="review" id="" placeholder="Min Review Value">
         <button type="submit">Search</button>
