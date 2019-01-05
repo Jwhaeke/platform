@@ -103,12 +103,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }   
         }
     }
+
+    function printGames() {
+        global $searchedGames;
+        for ($i=0; $i < count($searchedGames); $i++) { 
+            echo "Game name: ".$searchedGames[$i]["game"]." This game costs: ".$searchedGames[$i]["price"]." This game has a review value of: ".$searchedGames[$i]["review"]."<br>";
+        }
+    }
     
     filterGenre();
     filterGame();
     filterPrice();
     filterReview();
-    print_r($searchedGames);
+    printGames();
+    // print_r($searchedGames);
+    
+
+    
         
 }
   
@@ -129,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <div class="container">
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+        <!-- Maybe find a way to auto complete typing -->
         <input type="text" name="name" id="" placeholder="Search Game" value="<?php if(isset($_POST['name'])) echo $_POST['name'] ?>">
         <select name="genre" id="">
             <option value="">Select Genre</option>
