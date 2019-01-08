@@ -2,6 +2,8 @@
 
 <?php
 //On submit
+$myGames = [];
+global $myGames;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $game = $_POST['name'];
@@ -118,7 +120,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // printGames(); 
         
 }
-  
+
+
+//  This still feels very MacGuyvered
+//  
+///////////////////////////////////////////
+//
+//  For tomorrow - Fix buy function
+//
+///////////////////////////////////////////
+if (array_key_exists('buy',$_POST)){
+    $buyGame = $_POST['id'];
+    array_push($myGames, $listGames[$buyGame]);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -147,6 +162,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <input type="number" name="review" id="" placeholder="Min Review Value" value="<?php if(isset($_POST['review'])) echo $_POST['review'] ?>">
         <button type="submit">Search</button>
     </form>
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle"
+                type="button" id="dropdownMenu1" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+            My games
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <?php for ($i=0; $i < count($myGames); $i++): ?>         
+            <a class="dropdown-item" href="#!"><?php echo $myGames[$i]['game']; ?></a>
+        <?php endfor; ?>
+        </div>
+    </div>
 </div>
 
 
@@ -163,13 +190,18 @@ if (isset($searchedGames)  && !empty($searchedGames)): ?>
                     <p class="card-text">This game costs <?php echo $searchedGames[$i]["price"].".<br>"; ?>
                     <b>Description:</b> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rem asperiores deleniti necessitatibus! Pariatur, maiores suscipit? Pariatur alias fugit expedita quae?
                     </p>
-                    
+                    <form method="post">
+                        <input class="btn btn-primary" type="submit" name="buy" value="Buy" />
+                        <input type="hidden" name="id" value="<?php echo $i; ?>"/>
+                    </form>
                 </div>
             </div>
             <?php endfor; ?>
         <!-- </div> -->
     </div>
 <?php endif; ?>
+
+
 
 
     
