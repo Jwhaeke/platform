@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     filterGame();
     filterPrice();
     filterReview();
-    printGames(); 
+    // printGames(); 
         
 }
   
@@ -148,6 +148,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <button type="submit">Search</button>
     </form>
 </div>
+
+
+<?php
+
+if (isset($searchedGames)  && !empty($searchedGames)): ?>
+    <div class="container">
+        <!-- <div class="card-group"> -->
+            <?php for ($i=0; $i < count($searchedGames); $i++): ?> 
+            <div class="card d-inline-block">
+                <div class="card-body">
+                    <h4 class="card-title"><?php echo $searchedGames[$i]["game"]; ?></h4>
+                    <h6 class="card-subtitle mb-2 text-muted"><?php echo $searchedGames[$i]["review"]; ?> out of 5 stars.</h6>
+                    <p class="card-text">This game costs <?php echo $searchedGames[$i]["price"].".<br>"; ?>
+                    <b>Description:</b> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rem asperiores deleniti necessitatibus! Pariatur, maiores suscipit? Pariatur alias fugit expedita quae?
+                    </p>
+                    
+                </div>
+            </div>
+            <?php endfor; ?>
+        <!-- </div> -->
+    </div>
+<?php endif; ?>
+
+
+    
+        
+            
+            
+         
 
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
