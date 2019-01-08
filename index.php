@@ -15,21 +15,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         global $searchedGames;
         global $game;
         $tempArr = [];
-        if ($game != '') {              //  If game is not empty
-            $gameName = strtolower($game);
-            if (empty($searchedGames)) {                                                                         
-                for ($i=0; $i < count($listGames); $i++) { 
-                    if ($listGames[$i]["game"] == $game) {
-                        array_push($searchedGames, $listGames[$i]); 
+        if ($game != '') {                                             //   If game is not empty
+            $gameName = strtolower($game);                             //   Convert search query to lower case
+            if (empty($searchedGames)) {                               //   Check if a search has been done already                                          
+                for ($i=0; $i < count($listGames); $i++) {             //   If not use original database 
+                    if ($listGames[$i]["game"] == $game) {             //   Check is there is a match
+                        array_push($searchedGames, $listGames[$i]);    //   If so add array to searchedgames array
                     } 
                 }
-            } else {
-                for ($i=0; $i < count($searchedGames); $i++) { 
-                    if ($searchedGames[$i]["game"] == $game) {
-                        array_push($tempArr, $searchedGames[$i]);
+            } else {                                                   //   If a search has already been done
+                for ($i=0; $i < count($searchedGames); $i++) {         //   Loop through $searchedGames
+                    if ($searchedGames[$i]["game"] == $game) {         //   Check if there is a match
+                        array_push($tempArr, $searchedGames[$i]);      //   If so add to temparray
                     }                    
                 }
-                $searchedGames = $tempArr;    
+                $searchedGames = $tempArr;                             //   and set $searchedGames equal to temparray
             }    
         }
     }
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    function printGames() {
+    function printGames() {         // Echo output to screen. Functional only, needs to be better looking. 
         global $searchedGames;
         for ($i=0; $i < count($searchedGames); $i++) { 
             echo "Game name: ".$searchedGames[$i]["game"]." This game costs: ".$searchedGames[$i]["price"]." This game has a review value of: ".$searchedGames[$i]["review"]."<br>";
@@ -115,15 +115,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     filterGame();
     filterPrice();
     filterReview();
-    printGames();
-    // print_r($searchedGames);
-    
-
-    
+    printGames(); 
         
 }
   
-
 ?>
 
 <!DOCTYPE html>
