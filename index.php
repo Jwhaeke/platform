@@ -1,7 +1,48 @@
-<?php include 'data.php'; ?>
+
 
 <?php
 session_start();
+
+$servername = "127.0.0.1";
+$username = "root";
+$password = "pannenkoek";
+$dbname = "games";
+
+
+$conn = mysqli_connect($servername, $username, $password, $dbname);
+
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+// echo "Connected successfully";
+
+$sql = "SELECT * FROM games";
+$result = mysqli_query($conn, $sql);
+
+if (mysqli_num_rows($result) > 0) {
+    $tempList = [];
+    // output data of each row
+        
+        while ($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
+            $tempList[] = array(
+                 'id' => $row['id'],
+                 'game' => $row['name'],
+                 'genre' => $row['genre'],
+                 'price' => $row['price'],
+                 'review' => $row['review']
+
+            );
+
+        }
+
+        $listGames = $tempList;
+} else {
+    echo "0 results";
+    
+}
+
+mysqli_close($conn); 
 
 //On submit
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
@@ -141,6 +182,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["buy"] == "Buy"){
             <option value="rpg">RPG</option>
             <option value="fps">FPS</option>
             <option value="arcade">Arcade</option>
+            <option value="race">Race</option>
+            <option value="sport">Sport</option>
+            <option value="puzzle">Puzzle</option>
+
         </select>
         <input type="number" name="price" id="" placeholder="Max Price" value="<?php if(isset($_POST['price'])) echo $_POST['price'] ?>">
         <input type="number" name="review" id="" placeholder="Min Review Value" value="<?php if(isset($_POST['review'])) echo $_POST['review'] ?>">
