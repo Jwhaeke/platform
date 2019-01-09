@@ -1,11 +1,10 @@
 <?php include 'data.php'; ?>
 
 <?php
-//On submit
-$myGames = [];
-global $myGames;
+session_start();
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+//On submit
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
     $game = $_POST['name'];
     $genre = $_POST['genre'];
     $price = $_POST['price'];
@@ -55,8 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }                    
                 }
                 $searchedGames = $tempArr; 
-            }
-            
+            }            
         }
     }
     
@@ -105,33 +103,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }   
         }
     }
-
-    function printGames() {         // Echo output to screen. Functional only, needs to be better looking. 
-        global $searchedGames;
-        for ($i=0; $i < count($searchedGames); $i++) { 
-            echo "Game name: ".$searchedGames[$i]["game"]." This game costs: ".$searchedGames[$i]["price"]." This game has a review value of: ".$searchedGames[$i]["review"]."<br>";
-        }
-    }
     
     filterGenre();
     filterGame();
     filterPrice();
-    filterReview();
-    // printGames(); 
-        
+    filterReview();       
 }
 
 
-//  This still feels very MacGuyvered
-//  
-///////////////////////////////////////////
-//
-//  For tomorrow - Fix buy function
-//
-///////////////////////////////////////////
-if (array_key_exists('buy',$_POST)){
+//  Add the game name to the list
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["buy"] == "Buy"){
     $buyGame = $_POST['id'];
-    array_push($myGames, $listGames[$buyGame]);
+    $_SESSION["myGames"][] = $buyGame;
 }
 
 ?>
@@ -150,6 +133,7 @@ if (array_key_exists('buy',$_POST)){
 
 <div class="container">
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+        <input type="hidden" name="search" value="searched">
         <!-- Maybe find a way to auto complete typing -->
         <input type="text" name="name" id="" placeholder="Search Game" value="<?php if(isset($_POST['name'])) echo $_POST['name'] ?>">
         <select name="genre" id="">
@@ -169,9 +153,9 @@ if (array_key_exists('buy',$_POST)){
             My games
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-        <?php for ($i=0; $i < count($myGames); $i++): ?>         
-            <a class="dropdown-item" href="#!"><?php echo $myGames[$i]['game']; ?></a>
-        <?php endfor; ?>
+        <?php foreach ($_SESSION["myGames"] as $game): ?>         
+            <a class="dropdown-item" href="#!"><?php echo $game; ?></a>
+        <?php endforeach; ?>
         </div>
     </div>
 </div>
@@ -182,33 +166,24 @@ if (array_key_exists('buy',$_POST)){
 if (isset($searchedGames)  && !empty($searchedGames)): ?>
     <div class="container">
         <!-- <div class="card-group"> -->
-            <?php for ($i=0; $i < count($searchedGames); $i++): ?> 
+            <?php foreach ($searchedGames as $value): ?> 
             <div class="card d-inline-block">
                 <div class="card-body">
-                    <h4 class="card-title"><?php echo $searchedGames[$i]["game"]; ?></h4>
-                    <h6 class="card-subtitle mb-2 text-muted"><?php echo $searchedGames[$i]["review"]; ?> out of 5 stars.</h6>
-                    <p class="card-text">This game costs <?php echo $searchedGames[$i]["price"].".<br>"; ?>
+                    <h4 class="card-title"><?php echo $value["game"]; ?></h4>
+                    <h6 class="card-subtitle mb-2 text-muted"><?php echo $value["review"]; ?> out of 5 stars.</h6>
+                    <p class="card-text">This game costs <?php echo $value["price"].".<br>"; ?>
                     <b>Description:</b> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rem asperiores deleniti necessitatibus! Pariatur, maiores suscipit? Pariatur alias fugit expedita quae?
                     </p>
-                    <form method="post">
+                    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
                         <input class="btn btn-primary" type="submit" name="buy" value="Buy" />
-                        <input type="hidden" name="id" value="<?php echo $i; ?>"/>
+                        <input type="hidden" name="id" value="<?php echo $value["game"]; ?>"/>
                     </form>
                 </div>
             </div>
-            <?php endfor; ?>
+            <?php endforeach; ?>
         <!-- </div> -->
     </div>
 <?php endif; ?>
-
-
-
-
-    
-        
-            
-            
-         
 
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
