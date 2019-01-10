@@ -3,46 +3,21 @@
 <?php
 session_start();
 
-$servername = "127.0.0.1";
-$username = "root";
-$password = "pannenkoek";
-$dbname = "games";
+$conn = new PDO("mysql:host=127.0.0.1;dbname=games", "root", "pannenkoek");
 
+$stmt = $conn->query("SELECT * FROM games");
 
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-// echo "Connected successfully";
-
-$sql = "SELECT * FROM games";
-$result = mysqli_query($conn, $sql);
-
-if (mysqli_num_rows($result) > 0) {
-    $tempList = [];
-    // output data of each row
-        
-        while ($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
-            $tempList[] = array(
-                 'id' => $row['id'],
-                 'game' => $row['name'],
-                 'genre' => $row['genre'],
-                 'price' => $row['price'],
-                 'review' => $row['review']
-
-            );
-
-        }
-
-        $listGames = $tempList;
-} else {
-    echo "0 results";
-    
+while ($row = $stmt->fetch()) {
+    $listGames[] = array(
+        'id' => $row['id'],
+        'game' => $row['name'],
+        'genre' => $row['genre'],
+        'price' => $row['price'],
+        'review' => $row['review']
+   );
 }
 
-mysqli_close($conn); 
+$conn = NULL;
 
 //On submit
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
@@ -181,7 +156,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["buy"] == "Buy"){
             <option value="">Select Genre</option>
             <option value="rpg">RPG</option>
             <option value="fps">FPS</option>
-            <option value="arcade">Arcade</option>
             <option value="race">Race</option>
             <option value="sport">Sport</option>
             <option value="puzzle">Puzzle</option>
@@ -191,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["buy"] == "Buy"){
         <input type="number" name="review" id="" placeholder="Min Review Value" value="<?php if(isset($_POST['review'])) echo $_POST['review'] ?>">
         <button type="submit">Search</button>
     </form>
-    <div class="dropdown">
+    <div class="dropdown float-right">
         <button class="btn btn-secondary dropdown-toggle"
                 type="button" id="dropdownMenu1" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -210,7 +184,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["buy"] == "Buy"){
 
 if (isset($searchedGames)  && !empty($searchedGames)): ?>
     <div class="container">
-        <!-- <div class="card-group"> -->
             <?php foreach ($searchedGames as $value): ?> 
             <div class="card d-inline-block">
                 <div class="card-body">
@@ -226,7 +199,6 @@ if (isset($searchedGames)  && !empty($searchedGames)): ?>
                 </div>
             </div>
             <?php endforeach; ?>
-        <!-- </div> -->
     </div>
 <?php endif; ?>
 
