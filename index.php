@@ -3,19 +3,23 @@
 <?php
 session_start();
 
-$conn = new PDO("mysql:host=127.0.0.1;dbname=games", "root", "pannenkoek");
+function connect(){
+    $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
+}
+$conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
 
-$stmt = $conn->query("SELECT * FROM games");
+$stmt = $conn->query("SELECT * FROM games INNER JOIN genre ON games.genre = genre.id");
 
 while ($row = $stmt->fetch()) {
     $listGames[] = array(
         'id' => $row['id'],
         'game' => $row['name'],
-        'genre' => $row['genre'],
+        'genre' => $row['type'],
         'price' => $row['price'],
         'review' => $row['review']
    );
 }
+
 
 $conn = NULL;
 
@@ -26,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
     $price = $_POST['price'];
     $review = $_POST['review'];
     $searchedGames = [];
-
+    
     if ($game = "" && $genre = "" && $price = "" && $review = ""){
     } else {
         function filterGame(){
@@ -121,11 +125,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
                 }   
             }
         }
-    
+        // Temp search query as a test. Is working but needs 
+        function getReview() {
+            global $review;
+            global $searchedGames;
+            $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek"); // May be ok to put this at top of function
+            $sql = "SELECT * FROM games INNER JOIN genre ON games.genre = genre.id WHERE games.review >= $review";
+            foreach ($conn->query($sql) as $row) {
+                $searchedGames[] = $row;
+            }
+            print_r($searchedGames);
+        }
+
     filterGenre();
     filterGame();
     filterPrice();
-    filterReview();    
+    getReview($conn);    
     }   
 }
 
@@ -191,7 +206,8 @@ if (isset($searchedGames)  && !empty($searchedGames)): ?>
             <?php foreach ($searchedGames as $value): ?> 
             <div class="card d-inline-block">
                 <div class="card-body">
-                    <h4 class="card-title"><?php echo $value["game"]; ?></h4>
+                    <h4 class="card-title"><?php echo $value["name"]; ?></h4>
+                    <h4 class="card-subtitle mb-2 text-muted"><?php echo $value["type"]; ?></h4>
                     <h6 class="card-subtitle mb-2 text-muted"><?php echo $value["review"]; ?> out of 5 stars.</h6>
                     <p class="card-text">This game costs <?php echo $value["price"].".<br>"; ?>
                     <b>Description:</b> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rem asperiores deleniti necessitatibus! Pariatur, maiores suscipit? Pariatur alias fugit expedita quae?
