@@ -1,7 +1,6 @@
 <?php
 
 //  Need to catch $_POST before and sanitize input
-echo $_POST['newUsername'];
 
 try {
     $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
