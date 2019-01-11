@@ -1,4 +1,7 @@
 <?php
+session_start();
+
+
 
 try {
     $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
@@ -9,13 +12,12 @@ try {
         ':email' => $_POST['email']]
     );
 
-    $user = $stmt->fetch();
-    
+    $user = $stmt->fetch();  
     $checkPass = htmlspecialchars($_POST['password']);
-
     if ($user && password_verify($checkPass, $user['password']))
     {
-        echo "valid!";
+        $_SESSION['user_id'] = $user['id'];
+        header("Location: index.php");
     } else {
         echo "invalid";
     }

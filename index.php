@@ -3,6 +3,11 @@
 <?php
 session_start();
 
+if(empty($_SESSION['user_id']))
+{
+    header("Location: login.php");
+}
+
 $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
 
 //On submit
