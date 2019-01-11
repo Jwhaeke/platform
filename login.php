@@ -15,8 +15,8 @@
                 <h4>Login</h4>
                 <form action="logincheck.php" method="post">
                 <div class="form-group">
-                    <label for="">Username/Email</label>
-                    <input type="text" name="username" class="form-control"/>
+                    <label for="">Email</label>
+                    <input type="text" name="email" class="form-control"/>
                 </div>
                 <div class="form-group">
                     <label for="">Password</label>
