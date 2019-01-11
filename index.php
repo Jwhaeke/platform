@@ -3,145 +3,51 @@
 <?php
 session_start();
 
-function connect(){
-    $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
-}
 $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
-
-$stmt = $conn->query("SELECT * FROM games INNER JOIN genre ON games.genre = genre.id");
-
-while ($row = $stmt->fetch()) {
-    $listGames[] = array(
-        'id' => $row['id'],
-        'game' => $row['name'],
-        'genre' => $row['type'],
-        'price' => $row['price'],
-        'review' => $row['review']
-   );
-}
-
-
-$conn = NULL;
 
 //On submit
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
-    $game = $_POST['name'];
-    $genre = $_POST['genre'];
-    $price = $_POST['price'];
-    $review = $_POST['review'];
-    $searchedGames = [];
-    
-    if ($game = "" && $genre = "" && $price = "" && $review = ""){
-    } else {
-        function filterGame(){
-            global $listGames;
-            global $searchedGames;
-            global $game;
-            $tempArr = [];
-            if ($game != '') {                                             //   If game is not empty
-                $gameName = strtolower($game);                             //   Convert search query to lower case
-                if (empty($searchedGames)) {                               //   Check if a search has been done already                                          
-                    for ($i=0; $i < count($listGames); $i++) {             //   If not use original database 
-                        if ($listGames[$i]["game"] == $game) {             //   Check is there is a match
-                            array_push($searchedGames, $listGames[$i]);    //   If so add array to searchedgames array
-                        } 
-                    }
-                } else {                                                   //   If a search has already been done
-                    for ($i=0; $i < count($searchedGames); $i++) {         //   Loop through $searchedGames
-                        if ($searchedGames[$i]["game"] == $game) {         //   Check if there is a match
-                            array_push($tempArr, $searchedGames[$i]);      //   If so add to temparray
-                        }                    
-                    }
-                    $searchedGames = $tempArr;                             //   and set $searchedGames equal to temparray
-                }    
-            }
-        }
+       
+    $searchedGames = array();  
+    $where = array();
+    $params = array();
+    try {
+        $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        function filterGenre(){
-            global $listGames;
-            global $searchedGames;
-            global $genre;
-            $tempArr = [];
-            if ($genre != '') {   
-                if (empty($searchedGames)) {              
-                    for ($i=0; $i < count($listGames); $i++) {          // Loop through $listgames and check if $genre is same as "genre"
-                        if ($listGames[$i]["genre"] == $genre) {
-                            array_push($searchedGames, $listGames[$i]); 
-                        } 
-                    }
-                } else {
-                    for ($i=0; $i < count($searchedGames); $i++) { 
-                        if ($listGames[$i]["genre"] == $genre) {
-                            array_push($tempArr, $listGames[$i]);
-                        }                    
-                    }
-                    $searchedGames = $tempArr; 
-                }            
-            }
+        if (!empty($_POST['name'])) {
+          $where[] = "name LIKE :name";
+          $params[':name'] = $_POST['name'];
+        }
+      
+        if (!empty($_POST['type'])) {
+          $where[] = "type = :type";
+          $params[':type'] = $_POST['type'];
+        }
+      
+        if (!empty($_POST['price'])) {
+            $where[] = "price <= :price";
+            $params[':price'] = $_POST['price'];
+        }
+    
+        if (!empty($_POST['review'])) {
+        $where[] = "review >= :review";
+        $params[':review'] = $_POST['review'];
         }
         
-        function filterPrice(){
-            global $listGames;
-            global $searchedGames;
-            global $price;
-            $tempArr = [];
-            if ($price != '') {                                                //If price is not empty    
-                if (empty($searchedGames)) {    
-                    for ($i=0; $i < count($listGames); $i++) {                 // Loop through $listgames and check if $price is lower than "price"
-                        if ($listGames[$i]["price"] <= $price) {
-                            array_push($searchedGames, $listGames[$i]);
-                        } 
-                    }    
-                } else { 
-                    for ($i=0; $i < count($searchedGames); $i++) { 
-                        if ($searchedGames[$i]["price"] <= $price) {
-                            array_push($tempArr, $searchedGames[$i]);
-                        }                    
-                    }
-                    $searchedGames = $tempArr;  
-                }   
-            }
+        if(count($where) > 0){
+            $sql .= 'SELECT * FROM games INNER JOIN genre ON games.genre = genre.id WHERE ' . implode(' AND ', $where);
         }
-
-        function filterReview(){
-            global $listGames;
-            global $searchedGames;
-            global $review;
-            $tempArr = [];
-            if ($review != '') {
-                if (empty($searchedGames)) {    
-                    for ($i=0; $i < count($listGames); $i++) { 
-                        if ($listGames[$i]["review"] >= $review) {
-                            array_push($searchedGames, $listGames[$i]);
-                        } 
-                    }
-                } else { 
-                    for ($i=0; $i < count($searchedGames); $i++) { 
-                        if ($searchedGames[$i]["review"] >= $review) {
-                            array_push($tempArr, $searchedGames[$i]);
-                        }                    
-                    }
-                    $searchedGames = $tempArr;  
-                }   
-            }
-        }
-        // Temp search query as a test. Is working but needs 
-        function getReview() {
-            global $review;
-            global $searchedGames;
-            $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek"); // May be ok to put this at top of function
-            $sql = "SELECT * FROM games INNER JOIN genre ON games.genre = genre.id WHERE games.review >= $review";
-            foreach ($conn->query($sql) as $row) {
-                $searchedGames[] = $row;
-            }
-            print_r($searchedGames);
-        }
-
-    filterGenre();
-    filterGame();
-    filterPrice();
-    getReview($conn);    
-    }   
+        $stmt = $conn->prepare($sql);
+        $stmt->execute($params);
+        $searchedGames = $stmt->fetchAll();
+       
+    }
+    catch(PDOExeption $e) {
+        echo "Connection failed: " . $e->getMessage();
+    }
+   
+    $conn = NULL;
 }
 
 
@@ -170,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["buy"] == "Buy"){
         <input type="hidden" name="search" value="searched">
         <!-- Maybe find a way to auto complete typing -->
         <input type="text" name="name" id="" placeholder="Search Game" value="<?php if(isset($_POST['name'])) echo $_POST['name'] ?>">
-        <select name="genre" id="">
+        <select name="type" id="">
             <option value="">Select Genre</option>
             <option value="rpg">RPG</option>
             <option value="fps">FPS</option>
