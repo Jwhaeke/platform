@@ -9,6 +9,7 @@
 </head>
 <body>
 
+<!-- Login form -->
 <div class="container">
     <div class="row">
             <div class="col-md-5 well">
@@ -26,8 +27,7 @@
                     <input type="submit" name="btnLogin" class="btn btn-primary" value="Login"/>
                     <a href="register.html" class="btn btn-primary" role="button" aria-pressed="true">Register</a>
                 </div>
-            </form>
-            
+            </form>            
         </div>
     </div>
 </div>
