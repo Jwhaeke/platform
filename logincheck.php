@@ -17,6 +17,7 @@ try {
     if ($user && password_verify($checkPass, $user['password']))
     {
         $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user'] = $user['name'];
         header("Location: index.php");
     } else {
         echo "invalid";

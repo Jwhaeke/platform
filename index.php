@@ -8,11 +8,11 @@ if(empty($_SESSION['user_id']))
     header("Location: login.php");
 }
 
-$conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
+echo $_SESSION['user'];
 
 //On submit
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
-       
+
     $searchedGames = array();  
     $where = array();
     $params = array();
@@ -45,8 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
         }
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
-        $searchedGames = $stmt->fetchAll();
-       
+        $searchedGames = $stmt->fetchAll();    
     }
     catch(PDOExeption $e) {
         echo "Connection failed: " . $e->getMessage();

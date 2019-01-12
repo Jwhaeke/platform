@@ -24,8 +24,10 @@
                 </div>
                 <div class="form-group">
                     <input type="submit" name="btnLogin" class="btn btn-primary" value="Login"/>
+                    <a href="register.html" class="btn btn-primary" role="button" aria-pressed="true">Register</a>
                 </div>
             </form>
+            
         </div>
     </div>
 </div>

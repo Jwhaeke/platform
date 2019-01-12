@@ -1,6 +1,7 @@
 <?php
 
 //  Need to catch $_POST before and sanitize input
+$registered = false;
 
 try {
     $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
@@ -14,12 +15,16 @@ try {
         'username' => $_POST['newUsername'],
         'password' => $hashPass
     ]);
-
+    $registered = true;
 }
 catch(PDOExeption $e) {
     echo "Connection failed: " . $e->getMessage();
 }
 
 $conn = NULL;
+
+if  ($registered) {
+    header("Location: logincheck.php");
+}
 
 ?>
