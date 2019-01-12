@@ -24,7 +24,7 @@ catch(PDOExeption $e) {
 $conn = NULL;
 
 if  ($registered) {
-    header("Location: logincheck.php");
+    header("Location: login.php");
 }
 
 ?>
