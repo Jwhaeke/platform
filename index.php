@@ -53,8 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
         $searchedGames = $stmt->fetchAll(); 
-        echo $sql;   
-        print_r($params);
     }
     catch(PDOExeption $e) {
         echo "Connection failed: " . $e->getMessage();
@@ -72,19 +70,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["buy"] == "Buy"){
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <title>Platform</title>
+    <script type="text/javascript" src="javascript/main.js"></script>
 </head>
-<body>
+<body onload="startTime()">
 
 <div class="pos-f-t">
   <div class="collapse" id="navbarToggleExternalContent">
     <div class="bg-dark p-4">
-      <h4 class="text-white">Welcome <?php echo ucfirst($_SESSION['user']) ?></h4>
-      <span class="text-muted">You are logged in</span>
+        <h4 class="text-white">Welcome <?php echo ucfirst($_SESSION['user']) ?></h4>
+        <span class="text-muted">The time is</span>
+        <div class="text-info" id="txt"></div> 
     </div>
   </div>
   <nav class="navbar navbar-dark bg-dark">
@@ -97,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["buy"] == "Buy"){
                 <input class="form-control" type="text" name="name" id="" placeholder="Search Game" value="<?php if(isset($_POST['name'])) echo $_POST['name'] ?>">
                     <select class="custom-select" name="type" id="">
                         <option selected value="">Select Genre</option>
+                        <!-- This really should be automated - gathering type names from db server -->
                         <option value="rpg">RPG</option>
                         <option value="fps">FPS</option>
                         <option value="race">Race</option>
