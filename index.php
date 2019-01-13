@@ -1,4 +1,5 @@
 <?php
+
 // Start a session and check if there is a user session active - if not redirect to login.php
 session_start();
 
@@ -6,8 +7,6 @@ if(empty($_SESSION['user_id']))
 {
     header("Location: login.php");
 }
-
-echo $_SESSION['user'];
 
 //On search check if the form is the search form
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
@@ -22,14 +21,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
         //  Check if a search by name has been done
         if (!empty($_POST['name'])) {
         //  Prepare a partial query LIKE string    
-          $where[] = "name LIKE :name";
+            $where[] = "name LIKE :name";
         //  Set params accordingly  
-          $params[':name'] = $_POST['name'];
+            $nameGame = $_POST['name'];
+            $params[':name'] = "%$nameGame%";
         }
       
         if (!empty($_POST['type'])) {
-          $where[] = "type = :type";
-          $params[':type'] = $_POST['type'];
+            $where[] = "type = :type";
+            $params[':type'] = $_POST['type'];
         }
       
         if (!empty($_POST['price'])) {
@@ -41,14 +41,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
         $where[] = "review >= :review";
         $params[':review'] = $_POST['review'];
         }
+
+        $whereFirst = $where[0];
+        $paramsFirst = $params[0];
+        
         
         //  Search through the games table and use foreign key genre - add all prepared partial queries
         if(count($where) > 0){
-            $sql .= 'SELECT * FROM games INNER JOIN genre ON games.genre = genre.id WHERE ' . implode(' AND ', $where);
+            $sql .= "SELECT * FROM games INNER JOIN genre ON games.genre = genre.id WHERE ". implode(' AND ', $where);
         }
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
-        $searchedGames = $stmt->fetchAll();    
+        $searchedGames = $stmt->fetchAll(); 
+        echo $sql;   
+        print_r($params);
     }
     catch(PDOExeption $e) {
         echo "Connection failed: " . $e->getMessage();
@@ -74,40 +80,48 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["buy"] == "Buy"){
 </head>
 <body>
 
-<!-- Search form - will be placed in a header / nav bar -->
-<div class="container">
-    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
-        <input type="hidden" name="search" value="searched">
-        <input type="text" name="name" id="" placeholder="Search Game" value="<?php if(isset($_POST['name'])) echo $_POST['name'] ?>">
-        <select name="type" id="">
-            <option value="">Select Genre</option>
-            <option value="rpg">RPG</option>
-            <option value="fps">FPS</option>
-            <option value="race">Race</option>
-            <option value="sport">Sport</option>
-            <option value="puzzle">Puzzle</option>
-        </select>
-        <input type="number" name="price" id="" placeholder="Max Price" value="<?php if(isset($_POST['price'])) echo $_POST['price'] ?>">
-        <input type="number" name="review" id="" placeholder="Min Review Value" value="<?php if(isset($_POST['review'])) echo $_POST['review'] ?>">
-        <button type="submit">Search</button>
-    </form>
-    <div class="dropdown float-right">
-        <button class="btn btn-secondary dropdown-toggle"
-                type="button" id="dropdownMenu1" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-            My games
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <?php foreach ($_SESSION["myGames"] as $game): ?>         
-                <a class="dropdown-item" href="#!"><?php echo $game; ?></a>
-            <?php endforeach; ?>
-        </div>
+<div class="pos-f-t">
+  <div class="collapse" id="navbarToggleExternalContent">
+    <div class="bg-dark p-4">
+      <h4 class="text-white">Welcome <?php echo ucfirst($_SESSION['user']) ?></h4>
+      <span class="text-muted">You are logged in</span>
     </div>
+  </div>
+  <nav class="navbar navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span><?php echo ucfirst($_SESSION['user']) ?></span>
+    </button>
+        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+            <div class="input-group">
+                <input class="form-control" type="hidden" name="search" value="searched">
+                <input class="form-control" type="text" name="name" id="" placeholder="Search Game" value="<?php if(isset($_POST['name'])) echo $_POST['name'] ?>">
+                    <select class="custom-select" name="type" id="">
+                        <option selected value="">Select Genre</option>
+                        <option value="rpg">RPG</option>
+                        <option value="fps">FPS</option>
+                        <option value="race">Race</option>
+                        <option value="sport">Sport</option>
+                        <option value="puzzle">Puzzle</option>
+                    </select>
+                    <input class="form-control" type="number" name="price" id="" placeholder="Max Price" value="<?php if(isset($_POST['price'])) echo $_POST['price'] ?>" min=0 max=999>
+                    <input class="form-control" type="number" name="review" id="" placeholder="Min Review" value="<?php if(isset($_POST['review'])) echo $_POST['review'] ?>" min=0 max=5>
+                    <button class="btn btn-secondary" type="submit">Search</button>
+                </div>
+        </form>       
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle"
+                    type="button" id="dropdownMenu1" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                My games
+            </button>          
+                <?php foreach ($_SESSION["myGames"] as $game): ?>   
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1">      
+                    <a class="dropdown-item" href="#!"><?php echo $game; ?></a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </nav>
 </div>
-
-<!-- Display search result count compared to total -->
-<!-- At this point not working since it was used with the array -->
-<p class="text-center"><?php echo "You have found ".count($searchedGames)." games from a total of ".count($listGames)."."; ?> </p>
 
 <?php
 // Once a search has been done it will be displayed as individual cards with info and a buy button
