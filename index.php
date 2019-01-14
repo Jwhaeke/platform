@@ -101,11 +101,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["purchase"] == "Buy"){
 
 <div class="pos-f-t">
   <div class="collapse" id="navbarToggleExternalContent">
-    <div class="bg-dark p-4">
-        <h4 class="text-white">Welcome <?php echo ucfirst($_SESSION['user']) ?></h4>
-        <span class="text-muted">The time is</span>
-        <div class="text-info" id="txt"></div> 
-        <a href="basket.php">To my basket</a>
+    <div class="bg-dark p-4 d-flex justify-content-between">
+        <div>
+            <h3 class="text-white">Welcome <?php echo ucfirst($_SESSION['user']) ?></h3>
+            <a href="logout.php"><img src="https://img.icons8.com/nolan/64/000000/exit.png"></a>
+        </div>
+        <div>
+            <span class="text-muted">The time is</span>
+            <div class="text-info" id="txt"></div> 
+        </div>
+        <div>
+            <h3 class="text-white">My Basket</h3>
+            <a href="basket.php"><img src="https://img.icons8.com/nolan/64/000000/shopping-cart.png"></a>
+        </div>
     </div>
   </div>
   <nav class="navbar navbar-dark bg-dark">
