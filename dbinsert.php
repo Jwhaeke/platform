@@ -16,7 +16,7 @@ try {
     
     // Add parameters
     $statement->execute([
-        'name' =>$_POST['newUser'],
+        'name' => $_POST['newUser'],
         'email' => $_POST['newEmail'],
         'username' => $_POST['newUsername'],
         'password' => $hashPass
