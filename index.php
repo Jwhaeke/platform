@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
         
         //  Search through the games table and use foreign key genre - add all prepared partial queries
         if(count($where) > 0){
-            $sql .= "SELECT * FROM games INNER JOIN genre ON games.genre = genre.id WHERE ". implode(' AND ', $where);
+            $sql .= "SELECT games.id, games.name, games.genre, games.price, games.review, genre.type FROM games INNER JOIN genre ON games.genre = genre.id WHERE ". implode(' AND ', $where);      
         }
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
@@ -61,9 +61,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
 }
 
 //  Needs to be rewritten to add to db - but first a step to order / basket is required
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["buy"] == "Buy"){
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["purchase"] == "Buy"){
     $buyGame = $_POST['id'];
-    $_SESSION["myGames"][] = $buyGame;
+    $user = $_SESSION['user_id'];
+    try {
+        $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        // Prepare statement to insert data into the db
+        $statement = $conn->prepare("INSERT INTO orders (game_id, user_id) VALUES (:game, :user)");
+        // Add parameters
+        $statement->execute([
+            'game' =>$buyGame,
+            'user' => $user
+        ]);
+    }
+    catch(PDOExeption $e) {
+        echo "Connection failed: " . $e->getMessage();
+    }
+    
+        //  Close the connection
+    $conn = NULL;
+    
 }
 ?>
 
@@ -140,8 +159,8 @@ if (isset($searchedGames)  && !empty($searchedGames)): ?>
                 <b>Description:</b> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rem asperiores deleniti necessitatibus! Pariatur, maiores suscipit? Pariatur alias fugit expedita quae?
                 </p>
                 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
-                    <input class="btn btn-primary" type="submit" name="buy" value="Buy" />
-                    <input type="hidden" name="id" value="<?php echo $value["game"]; ?>"/>
+                    <input class="btn btn-primary" type="submit" name="purchase" value="Buy" />
+                    <input type="hidden" name="id" value="<?php echo $value["id"]; ?>"/>
                 </form>
             </div>
         </div>
