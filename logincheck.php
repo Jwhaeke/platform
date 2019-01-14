@@ -21,7 +21,7 @@ try {
     {
     //  Set sessions with user id and user name
         $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user'] = $user['name'];
+        $_SESSION['user'] = $user['username'];
 
     //  Redirect to the main page
         header("Location: index.php");

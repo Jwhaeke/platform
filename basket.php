@@ -34,14 +34,12 @@ try {
 
     // Search for orders made by the user and echo them - Also use data from the games table
     $stmt = $conn->prepare("SELECT orders.game_id, orders.id, games.name, games.price FROM orders INNER JOIN games ON orders.game_id=games.id WHERE user_id = :user");
-    $stmt->execute([
-        'user' => $_SESSION['user_id']
-        ]);
+    $stmt->execute(['user' => $_SESSION['user_id']]);
     $basket = $stmt->fetchall();  
     $value = 0;
     foreach ($basket as $key => $value) {
         echo $value['name']. " costs: " .$value['price'];
-        echo "<form action='basket.php' method='post'><button name='remove' type=submit value=$value[id]>Remove from basket</button></form>";
+        echo "<form action='basket.php' method='post'><button name='remove' type=submit value=".$value['id'].">Remove from basket</button></form>";
         $sum += $value['price'];
     }
     echo "Your order costs: " . $sum. "<br>";

@@ -145,7 +145,7 @@ $conn = NULL;
     <form action="profile.php" method="post">
         <h2>Your name</h2>
         <input class="form-control" type="hidden" name="change_name" value="changed_name">
-        <input class="form-control" type="text" minlength=5 name="name" id="" value=<?php echo $value['name']; ?>>
+        <input class="form-control" type="text" minlength=5 maxlength=15 name="name" id="" value=<?php echo $value['name']; ?>>
         <button type="submit">Change name</button>
     </form>
     <hr>
@@ -159,7 +159,7 @@ $conn = NULL;
     <form action="profile.php" method="post">
         <h2>username</h2>
         <input class="form-control" type="hidden" name="change_username" value="changed_username">
-        <input class="form-control" type="text" minlength=3 name="user_name" id="" value=<?php echo $value['username']; ?>> 
+        <input class="form-control" type="text" minlength=3 maxlength=10 name="user_name" id="" value=<?php echo $value['username']; ?>> 
         <button type="submit">Change username</button>
     </form>
     <hr>
