@@ -86,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["buy"] == "Buy"){
         <h4 class="text-white">Welcome <?php echo ucfirst($_SESSION['user']) ?></h4>
         <span class="text-muted">The time is</span>
         <div class="text-info" id="txt"></div> 
+        <a href="basket.php">To my basket</a>
     </div>
   </div>
   <nav class="navbar navbar-dark bg-dark">
