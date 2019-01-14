@@ -10,7 +10,6 @@ if(empty($_SESSION['user_id']))
 
 //On search check if the form is the search form
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
-
     $searchedGames = array();  
     $where = array();
     $params = array();
@@ -107,8 +106,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["purchase"] == "Buy"){
             <a href="logout.php"><img src="https://img.icons8.com/nolan/64/000000/exit.png"></a>
         </div>
         <div>
-            <span class="text-muted">The time is</span>
-            <div class="text-info" id="txt"></div> 
+            <h3 class="text-white">Profile</h3>
+            <a href="profile.php"><img src="https://img.icons8.com/nolan/64/000000/xbox-menu.png"></a>
         </div>
         <div>
             <h3 class="text-white">My Basket</h3>
@@ -120,36 +119,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["purchase"] == "Buy"){
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
       <span><?php echo ucfirst($_SESSION['user']) ?></span>
     </button>
-        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
-            <div class="input-group">
-                <input class="form-control" type="hidden" name="search" value="searched">
-                <input class="form-control" type="text" name="name" id="" placeholder="Search Game" value="<?php if(isset($_POST['name'])) echo $_POST['name'] ?>">
-                    <select class="custom-select" name="type" id="">
-                        <option selected value="">Select Genre</option>
-                        <!-- This really should be automated - gathering type names from db server -->
-                        <option value="rpg">RPG</option>
-                        <option value="fps">FPS</option>
-                        <option value="race">Race</option>
-                        <option value="sport">Sport</option>
-                        <option value="puzzle">Puzzle</option>
-                    </select>
-                    <input class="form-control" type="number" name="price" id="" placeholder="Max Price" value="<?php if(isset($_POST['price'])) echo $_POST['price'] ?>" min=0 max=999>
-                    <input class="form-control" type="number" name="review" id="" placeholder="Min Review" value="<?php if(isset($_POST['review'])) echo $_POST['review'] ?>" min=0 max=5>
-                    <button class="btn btn-secondary" type="submit">Search</button>
-                </div>
-        </form>       
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle"
-                    type="button" id="dropdownMenu1" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                My games
-            </button>          
-                <?php foreach ($_SESSION["myGames"] as $game): ?>   
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1">      
-                    <a class="dropdown-item" href="#!"><?php echo $game; ?></a>
-                <?php endforeach; ?>
-            </div>
+    <div>
+        <span class="text-muted">The time is</span>
+        <span class="text-info" id="txt"></span> 
+    </div>
+    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+        <div class="input-group">
+            <input class="form-control" type="hidden" name="search" value="searched">
+            <input class="form-control" type="text" name="name" id="" placeholder="Search Game" value="<?php if(isset($_POST['name'])) echo $_POST['name'] ?>">
+            <select class="custom-select" name="type" id="">
+                <option selected value="">Select Genre</option>
+                <!-- This really should be automated - gathering type names from db server -->
+                <option value="rpg">RPG</option>
+                <option value="fps">FPS</option>
+                <option value="race">Race</option>
+                <option value="sport">Sport</option>
+                <option value="puzzle">Puzzle</option>
+            </select>
+            <input class="form-control" type="number" name="price" id="" placeholder="Max Price" value="<?php if(isset($_POST['price'])) echo $_POST['price'] ?>" min=0 max=999>
+            <input class="form-control" type="number" name="review" id="" placeholder="Min Review" value="<?php if(isset($_POST['review'])) echo $_POST['review'] ?>" min=0 max=5>
+            <button class="btn btn-primary" type="submit">Search</button>
         </div>
+    </form>      
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle"
+                type="button" id="dropdownMenu1" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+            My games
+        </button>          
+            <?php foreach ($_SESSION["myGames"] as $game): ?>   
+                <div class="dropdown-menu" aria-labelledby="dropdownMenu1">      
+                <a class="dropdown-item" href="#!"><?php echo $game; ?></a>
+            <?php endforeach; ?>
+        </div>
+    </div>
     </nav>
 </div>
 
