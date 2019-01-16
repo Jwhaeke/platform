@@ -8,6 +8,25 @@ if(empty($_SESSION['user_id']))
     header("Location: login.php");
 }
 
+// Pull all owned games by the user and put them in an array
+try {
+    $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $stmt = $conn->prepare("SELECT name FROM my_games INNER JOIN games ON my_games.game_id = games.id WHERE user_id = :user_id");
+    $stmt->execute([
+        'user_id' => $_SESSION['user_id']]
+    );
+
+    $tempArray = $stmt->fetchAll();
+    foreach ($tempArray as $item){
+        $myGames[] = $item['name'];
+    }
+}
+catch(PDOExeption $e) {
+    echo "Connection failed: " . $e->getMessage();
+}  
+$conn = NULL;
+
 //On search check if the form is the search form
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
     $searchedGames = array();  
@@ -98,23 +117,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["purchase"] == "Buy"){
 </head>
 <body onload="startTime()">
 
+<!-- Collapsed part of the navbar -->
 <div class="pos-f-t">
   <div class="collapse" id="navbarToggleExternalContent">
     <div class="bg-dark p-4 d-flex justify-content-between">
         <div>
             <h3 class="text-white">Welcome <?php echo ucfirst($_SESSION['user']) ?></h3>
-            <a href="logout.php"><img src="https://img.icons8.com/nolan/64/000000/exit.png"></a>
+            <a href="logout.php"><img src="https://img.icons8.com/nolan/64/000000/exit.png" data-toggle="tooltip"
+        data-placement="top" title="Logout"></a>
         </div>
         <div>
             <h3 class="text-white">Profile</h3>
-            <a href="profile.php"><img src="https://img.icons8.com/nolan/64/000000/xbox-menu.png"></a>
+            <a href="profile.php"><img src="https://img.icons8.com/nolan/64/000000/xbox-menu.png" data-toggle="tooltip"
+        data-placement="top" title="Profile"></a>
         </div>
         <div>
             <h3 class="text-white">My Basket</h3>
-            <a href="basket.php"><img src="https://img.icons8.com/nolan/64/000000/shopping-cart.png"></a>
+            <a href="basket.php"><img src="https://img.icons8.com/nolan/64/000000/shopping-cart.png" data-toggle="tooltip"
+        data-placement="top" title="My Basket"></a>
         </div>
     </div>
   </div>
+
+  <!-- Visible part of navbar -->
   <nav class="navbar navbar-dark bg-dark">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
       <span><?php echo ucfirst($_SESSION['user']) ?></span>
@@ -123,6 +148,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["purchase"] == "Buy"){
         <span class="text-muted">The time is</span>
         <span class="text-info" id="txt"></span> 
     </div>
+
+    <!-- Search form for games -->
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
         <div class="input-group">
             <input class="form-control" type="hidden" name="search" value="searched">
@@ -140,15 +167,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["purchase"] == "Buy"){
             <input class="form-control" type="number" name="review" id="" placeholder="Min Review" value="<?php if(isset($_POST['review'])) echo $_POST['review'] ?>" min=0 max=5>
             <button class="btn btn-primary" type="submit">Search</button>
         </div>
-    </form>      
+    </form>    
+    
+    <!-- Dropdown menu displaying owned games -->
     <div class="dropdown">
         <button class="btn btn-primary dropdown-toggle"
                 type="button" id="dropdownMenu1" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
             My games
-        </button>          
-            <?php foreach ($_SESSION["myGames"] as $game): ?>   
-                <div class="dropdown-menu" aria-labelledby="dropdownMenu1">      
+        </button>     
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu1">     
+            <?php foreach ($myGames as $game): ?>                    
                 <a class="dropdown-item" href="#!"><?php echo $game; ?></a>
             <?php endforeach; ?>
         </div>
@@ -157,6 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["purchase"] == "Buy"){
 </div>
 
 <?php
+
 // Once a search has been done it will be displayed as individual cards with info and a buy button
 if (isset($searchedGames)  && !empty($searchedGames)): ?>
     <div class="container">

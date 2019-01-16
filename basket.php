@@ -31,16 +31,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 try {
     $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+    $_SESSION['basket'] = [];
     // Search for orders made by the user and echo them - Also use data from the games table
     $stmt = $conn->prepare("SELECT orders.game_id, orders.id, games.name, games.price FROM orders INNER JOIN games ON orders.game_id=games.id WHERE user_id = :user");
     $stmt->execute(['user' => $_SESSION['user_id']]);
     $basket = $stmt->fetchall();  
     $value = 0;
-    foreach ($basket as $key => $value) {
+    foreach ($basket as $value) {
         echo $value['name']. " costs: " .$value['price'];
-        echo "<form action='basket.php' method='post'><button name='remove' type=submit value=".$value['id'].">Remove from basket</button></form>";
+        echo "<form action='basket.php' method='post'><button name='remove' type=submit value=".$value['game_id'].">Remove from basket</button></form>";
         $sum += $value['price'];
+        $_SESSION['basket'][] = $value['game_id'];
     }
     echo "Your order costs: " . $sum. "<br>";
 }
@@ -62,5 +63,8 @@ $conn = NULL;
 </head>
 <body>
     <a href="index.php">Home</a>
+    <form action="purchase.php" method="post">
+        <button type="submit">Pay</button>
+    </form>
 </body>
 </html>
