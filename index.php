@@ -12,8 +12,7 @@ if(empty($_SESSION['user_id']))
 
 // Pull all owned games by the user and put them in an array
 try {
-    $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $conn = new Data;
     $stmt = $conn->prepare("SELECT name FROM my_games INNER JOIN games ON my_games.game_id = games.id WHERE user_id = :user_id");
     $stmt->execute([
         'user_id' => $_SESSION['user_id']]
