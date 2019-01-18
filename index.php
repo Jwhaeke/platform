@@ -20,65 +20,15 @@ foreach ($myGames as $item => $value){
 }
 
 //On search check if the form is the search form
+# Refactured to OOP - This is now being done in SearchGames.php
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
-    $searchedGames = array();  
-    $where = array();
-    $params = array();
-    global $myGames;
+        $search = new SearchGames;
+        $searchedGames = $search->getSearchedGames($_POST['name'], $_POST['type'],$_POST['price'],$_POST['review']);
 
-    try {
-        $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        //  Check if a search by name has been done
-        if (!empty($_POST['name'])) {
-        //  Prepare a partial query LIKE string    
-            $where[] = "name LIKE :name";
-        //  Set params accordingly  
-            $nameGame = $_POST['name'];
-            $params[':name'] = "%$nameGame%";
-        }
-      
-        if (!empty($_POST['type'])) {
-            $where[] = "type = :type";
-            $params[':type'] = $_POST['type'];
-        }
-      
-        if (!empty($_POST['price'])) {
-            $where[] = "price <= :price";
-            $params[':price'] = $_POST['price'];
-        }
-    
-        if (!empty($_POST['review'])) {
-        $where[] = "review >= :review";
-        $params[':review'] = $_POST['review'];
-        }
-
-        $whereFirst = $where[0];
-        $paramsFirst = $params[0];
         
-        
-        //  Search through the games table and use foreign key genre - add all prepared partial queries
-        if(count($where) > 0){
-            $sql .= "SELECT games.id, games.name, games.genre, games.price, games.review, genre.type FROM games INNER JOIN genre ON games.genre = genre.id WHERE ". implode(' AND ', $where);      
-        }
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $searchedGames = $stmt->fetchAll(); 
        
-        //  Hoping to filter out games already owned 
-
-        // $searchedResult = array_diff($searchedGames['name'], $myGames);
-        // print_r($searchResult);
-        // echo "<hr>";
-        // print_r($searchedGames);
-
-    }
-    catch(PDOExeption $e) {
-        echo "Connection failed: " . $e->getMessage();
-    }  
-    $conn = NULL;
+       
 }
 
 //  Needs to be rewritten to add to db - but first a step to order / basket is required
