@@ -9,7 +9,6 @@ if(empty($_SESSION['user_id']))
     header("Location: login.php");
 }
 
-
 // Pull all owned games by the user and put them in an array
 # Refactured to OOP - This is now being done in MyGames.php
 $userGames = new MyGames;
@@ -26,7 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
         $searchedGames = $search->getSearchedGames($_POST['name'], $_POST['type'],$_POST['price'],$_POST['review']);       
 }
 
-
 //  Needs to be rewritten to add to db - but first a step to order / basket is required
 # Refactured to OOP - This is now being done in SearchGames.php
 # Understand the declaring vars is a bit redundant but is for the sake of readability
@@ -41,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["purchase"] == "Buy"){
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">

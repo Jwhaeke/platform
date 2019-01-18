@@ -8,9 +8,7 @@ class Order extends Data{
         $stmt->execute([
             'game' =>$game_id,
             'user' => $user_id
-        ]);
-        
+        ]);      
     }
-
 }
 ?>

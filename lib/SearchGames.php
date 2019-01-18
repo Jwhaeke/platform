@@ -54,3 +54,4 @@ class SearchGames extends Data {
         // print_r($searchResult);
         // echo "<hr>";
         // print_r($searchedGames);
+?>
