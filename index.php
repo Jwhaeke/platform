@@ -1,6 +1,6 @@
 <?php
+namespace Platform;
 require 'vendor/autoload.php';
-use Platform\Data;
 // Start a session and check if there is a user session active - if not redirect to login.php
 session_start();
 
@@ -11,22 +11,13 @@ if(empty($_SESSION['user_id']))
 
 
 // Pull all owned games by the user and put them in an array
-try {
-    $conn = new Data;
-    $stmt = $conn->prepare("SELECT name FROM my_games INNER JOIN games ON my_games.game_id = games.id WHERE user_id = :user_id");
-    $stmt->execute([
-        'user_id' => $_SESSION['user_id']]
-    );
+# Refactured to OOP - This is now being done in MyGames.php
+$userGames = new MyGames;
+$myGames = $userGames->getMyGames(18); 
 
-    $tempArray = $stmt->fetchAll();
-    foreach ($tempArray as $item){
-        $myGames[] = $item['name'];
-    }
+foreach ($myGames as $item => $value){
+    $listGames[] = $value['name'];
 }
-catch(PDOExeption $e) {
-    echo "Connection failed: " . $e->getMessage();
-}  
-$conn = NULL;
 
 //On search check if the form is the search form
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
@@ -189,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["purchase"] == "Buy"){
             My games
         </button>     
             <div class="dropdown-menu" aria-labelledby="dropdownMenu1">     
-            <?php foreach ($myGames as $game): ?>                    
+            <?php foreach ($listGames as $game): ?>                    
                 <a class="dropdown-item" href="#!"><?php echo $game; ?></a>
             <?php endforeach; ?>
         </div>
