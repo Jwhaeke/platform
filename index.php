@@ -1,5 +1,6 @@
 <?php
-
+require 'vendor/autoload.php';
+use Platform\Data;
 // Start a session and check if there is a user session active - if not redirect to login.php
 session_start();
 
@@ -7,6 +8,7 @@ if(empty($_SESSION['user_id']))
 {
     header("Location: login.php");
 }
+
 
 // Pull all owned games by the user and put them in an array
 try {
@@ -32,6 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
     $searchedGames = array();  
     $where = array();
     $params = array();
+    global $myGames;
+
     try {
         $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -68,9 +72,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
         if(count($where) > 0){
             $sql .= "SELECT games.id, games.name, games.genre, games.price, games.review, genre.type FROM games INNER JOIN genre ON games.genre = genre.id WHERE ". implode(' AND ', $where);      
         }
+
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
         $searchedGames = $stmt->fetchAll(); 
+       
+        //  Hoping to filter out games already owned 
+
+        // $searchedResult = array_diff($searchedGames['name'], $myGames);
+        // print_r($searchResult);
+        // echo "<hr>";
+        // print_r($searchedGames);
+
     }
     catch(PDOExeption $e) {
         echo "Connection failed: " . $e->getMessage();
@@ -188,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["purchase"] == "Buy"){
 <?php
 
 // Once a search has been done it will be displayed as individual cards with info and a buy button
-if (isset($searchedGames)  && !empty($searchedGames)): ?>
+if (!empty($searchedGames)): ?>
     <div class="container">
         <?php foreach ($searchedGames as $value): ?> 
         <div class="card d-inline-block">
