@@ -8,5 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Platform\\Data' => $baseDir . '/lib/Data.php',
     'Platform\\MyGames' => $baseDir . '/lib/MyGames.php',
+    'Platform\\Order' => $baseDir . '/lib/Order.php',
+    'Platform\\SearchGames' => $baseDir . '/lib/SearchGames.php',
     'Platform\\Userinfo' => $baseDir . '/lib/Userinfo.php',
 );

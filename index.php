@@ -14,7 +14,6 @@ if(empty($_SESSION['user_id']))
 # Refactured to OOP - This is now being done in MyGames.php
 $userGames = new MyGames;
 $myGames = $userGames->getMyGames(18); 
-
 foreach ($myGames as $item => $value){
     $listGames[] = $value['name'];
 }
@@ -24,36 +23,18 @@ foreach ($myGames as $item => $value){
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
         $search = new SearchGames;
-        $searchedGames = $search->getSearchedGames($_POST['name'], $_POST['type'],$_POST['price'],$_POST['review']);
-
-        
-       
-       
+        $searchedGames = $search->getSearchedGames($_POST['name'], $_POST['type'],$_POST['price'],$_POST['review']);       
 }
 
+
 //  Needs to be rewritten to add to db - but first a step to order / basket is required
+# Refactured to OOP - This is now being done in SearchGames.php
+# Understand the declaring vars is a bit redundant but is for the sake of readability
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["purchase"] == "Buy"){
     $buyGame = $_POST['id'];
     $user = $_SESSION['user_id'];
-    try {
-        $conn = new PDO("mysql:host=127.0.0.1;dbname=platform", "root", "pannenkoek");
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        
-        // Prepare statement to insert data into the db
-        $statement = $conn->prepare("INSERT INTO orders (game_id, user_id) VALUES (:game, :user)");
-        // Add parameters
-        $statement->execute([
-            'game' =>$buyGame,
-            'user' => $user
-        ]);
-    }
-    catch(PDOExeption $e) {
-        echo "Connection failed: " . $e->getMessage();
-    }
-    
-        //  Close the connection
-    $conn = NULL;
-    
+    $order = new Order;
+    $order->addToBasket($buyGame,$user);    
 }
 ?>
 

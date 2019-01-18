@@ -23,6 +23,8 @@ class ComposerStaticInit510237693a72157f84c19400bbd48b4c
     public static $classMap = array (
         'Platform\\Data' => __DIR__ . '/../..' . '/lib/Data.php',
         'Platform\\MyGames' => __DIR__ . '/../..' . '/lib/MyGames.php',
+        'Platform\\Order' => __DIR__ . '/../..' . '/lib/Order.php',
+        'Platform\\SearchGames' => __DIR__ . '/../..' . '/lib/SearchGames.php',
         'Platform\\Userinfo' => __DIR__ . '/../..' . '/lib/Userinfo.php',
     );
 
