@@ -19,10 +19,9 @@ foreach ($myGames as $item => $value){
 
 //On search check if the form is the search form
 # Refactured to OOP - This is now being done in SearchGames.php
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["search"] == "searched"){
-        $search = new SearchGames;
-        $searchedGames = $search->getSearchedGames($_POST['name'], $_POST['type'],$_POST['price'],$_POST['review']);       
+    $search = new SearchGames;
+    $searchedGames = $search->getSearchedGames($_POST['name'], $_POST['type'],$_POST['price'],$_POST['review']);       
 }
 
 //  Needs to be rewritten to add to db - but first a step to order / basket is required

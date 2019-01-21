@@ -10,5 +10,10 @@ class Order extends Data{
             'user' => $user_id
         ]);      
     }
+
+    public function removeOrderFromBasket($order){
+        $stmt = $this->connection->prepare("DELETE FROM orders WHERE id = :order");
+        $stmt->execute(['order' => $order]);
+    }
 }
 ?>
