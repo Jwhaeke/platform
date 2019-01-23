@@ -12,7 +12,7 @@ if(empty($_SESSION['user_id']))
 // Pull all owned games by the user and put them in an array
 # Refactured to OOP - This is now being done in MyGames.php
 $userGames = new MyGames;
-$myGames = $userGames->getMyGames(18); 
+$myGames = $userGames->getMyGames($_SESSION['user_id']); 
 foreach ($myGames as $item => $value){
     $listGames[] = $value['name'];
 }
